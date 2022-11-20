@@ -1,0 +1,14 @@
+.button {
+	background-color:lightgrey;
+	color:black;
+	border: solid;
+	border-color: black;
+	border-width: 0.25vw;
+	border-radius: 0.5vw;
+	font-size: 1vw;
+}
+
+.button:hover {
+	background-color:black;
+	color:white;
+}
