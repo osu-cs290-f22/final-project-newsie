@@ -1,0 +1,38 @@
+{
+    "headlines": [
+        "This is a headline",
+        "This is another headline"
+    ],
+
+    "gameObjects": [
+            {
+            "gameMaster": "John",
+            "gameCode": 500,
+            "users": [
+                    {
+                    "username": "testUser",
+                    "websocket": "Somesocketid",
+                    "totalScore": 100
+                    }
+                ],
+            "gameRound": [
+                    {
+                    "headline": "testHeadline",
+                    "roundImages": [
+                                {
+                                "imageBlob": "some image blob",
+                                "votes": 2,
+                                "author": "testUser"
+                                }   
+                            ]
+                    }
+                ]
+            }
+    ],
+
+    "subtitles": [
+        "This is a subtitle",
+        "This is another subtitle"
+    ]
+}
+  
