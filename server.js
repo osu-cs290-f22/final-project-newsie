@@ -5,12 +5,6 @@ const express = require('express');
 const app = express()
 const port = 3000
 
-app.listen(port, function(){
-    console.log("Server listening!")
-})
-
-app.use(express.json())
-app.use(express.static("public"))
 
 //Reads serverData.json and returns an array of gameObjects
 function getExistingGameObjects(){
@@ -38,13 +32,6 @@ function isExistingGame(gameCode) {
     return false
 }
 
-
-//Getting the game code. If there exists a game with that code, respond true.
-app.get("/url", function(req, res, next){
-    const game = req.query.game;
-    res.status(200).send(isExistingGame(game))
-})
-
 //Checks to see if the name is already in use in the game. Returns false if it is.
 function isUniqueName(gameCode, name){
     var existingGameObjects = getExistingGameObjects()
@@ -60,6 +47,20 @@ function isUniqueName(gameCode, name){
         }
     }
 }
+
+app.listen(port, function(){
+    console.log("Server listening!")
+})
+
+app.use(express.json())
+app.use(express.static("public"))
+
+
+//Getting the game code. If there exists a game with that code, respond true.
+app.get("/url", function(req, res, next){
+    const game = req.query.game;
+    res.status(200).send(isExistingGame(game))
+})
 
 
 //Getting the game code and username. If there exists a game with that code and username, respond false.
