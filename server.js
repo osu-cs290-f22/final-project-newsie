@@ -69,6 +69,7 @@ app.post("/", function(req, res, next){
     const name = req.query.name;
 
     if(isUniqueName(game, name)){
+        //add user to game
         res.status(200).send(true)
     }else{
         res.status(200).send(false)
