@@ -11,12 +11,14 @@ document.addEventListener("load", function(){
 	xhp.send();
 });
 function backToCode(from){
+	firstWrong = undefined;
 	from.style.animation = "moveOut 1.5s linear 0s 1";
 	setTimeout(function(){from.classList.remove("active")}, 1500);
 	document.getElementById("code").classList.add("active");
 	document.getElementById("code").style.animation = "moveIn 1.5s linear 0s 1";
 }
 function goToNewGame(){
+	firstWrong = undefined;
 	document.getElementById("code").style.animation = "moveOut 1.5s linear 0s 1";
 	setTimeout(function(){document.getElementById("code").classList.remove("active")}, 1500);
 	document.getElementById("createGame").classList.add("active");
