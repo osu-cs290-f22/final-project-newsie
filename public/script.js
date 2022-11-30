@@ -1,13 +1,34 @@
-const WSaddr = "ws://localhost:3001";
-const HTaddr = "https://localhost:3001";
+const WSaddr = "wss://localhost:3001";
+const HTaddr = "https://localhost:3001/";
 let firstWrong, gameCode, nickName, ws;
+
+document.addEventListener("load", function(){
+	let xhp = new XMLHttpRequest();
+	xhp.onreadystatechange = function(){
+		document.getElementById("subtitle").innerHTML = xhp.responseText || "This code is full of errors! :)";
+	}
+	xhp.open("get", HTaddr+"subtitle", true);
+	xhp.send();
+});
+function backToCode(from){
+	from.style.animation = "moveOut 1.5s linear 0s 1";
+	setTimeout(function(){from.classList.remove("active")}, 1500);
+	document.getElementById("code").classList.add("active");
+	document.getElementById("code").style.animation = "moveIn 1.5s linear 0s 1";
+}
+function goToNewGame(){
+	document.getElementById("code").style.animation = "moveOut 1.5s linear 0s 1";
+	setTimeout(function(){document.getElementById("code").classList.remove("active")}, 1500);
+	document.getElementById("createGame").classList.add("active");
+	document.getElementById("createGame").style.animation = "moveIn 1.5s linear 0s 1";
+}
 
 function createGame(name){
 	if(name.length === 0){
 		firstWrong = firstWrong || document.timeline.currentTime/1000;
-		document.getElementById("nickname").style.animation = "wrong .2s linear "+(document.timeline.currentTime/1000 - firstWrong)+"s 2";
+		document.getElementById("createGame").style.animation = "wrong .2s linear "+(document.timeline.currentTime/1000 - firstWrong)+"s 2";
 	}else{
-		document.getElementById("nickname").style.animation = "think 1s cubic-bezier(0.5, 0, 0.5, 1) 0s infinite";
+		document.getElementById("createGame").style.animation = "think 1s cubic-bezier(0.5, 0, 0.5, 1) 0s infinite";
 		let xhp = new XMLHttpRequest();
 		xhp.onreadystatechange = function(){
 			if(this.readyState == 4 && this.status == 201){ // 201 is Created Something (game object)
@@ -27,7 +48,7 @@ function createGame(name){
 				document.getElementById("createGame").style.animation = "wrong .2s linear "+(document.timeline.currentTime/1000 - firstWrong)+"s 2";
 			}
 		};
-		xhp.open("POST", "?name="+encodeURIComponent(nickName), true);
+		xhp.open("POST", HTaddr+"?name="+encodeURIComponent(nickName), true);
 		xhp.send();
 	}
 }
@@ -49,7 +70,7 @@ function submitCode(code){
 				document.getElementById("code").style.animation = "wrong .2s linear "+(document.timeline.currentTime/1000 - firstWrong)+"s 2";
 			}
 		};
-		xhp.open("GET", "?code="+code, true);
+		xhp.open("GET", HTaddr+"?code="+code, true);
 		xhp.send();
 	}else{
 		firstWrong = firstWrong || document.timeline.currentTime/1000;
@@ -81,7 +102,7 @@ function submitName(name){
 				document.getElementById("nickname").style.animation = "wrong .2s linear "+(document.timeline.currentTime/1000 - firstWrong)+"s 2";
 			}
 		};
-		xhp.open("POST", "?code="+gameCode+"&name="+encodeURIComponent(nickName), true);
+		xhp.open("POST", HTaddr+"?code="+gameCode+"&name="+encodeURIComponent(nickName), true);
 		xhp.send();
 	}
 }
