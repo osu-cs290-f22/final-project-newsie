@@ -1,47 +1,88 @@
-let firstWrong;
-let gameCode;
-let nickName;
-function procede(cont){
-	switch(cont.id){
-		case "code":
-			if(cont.children[1].value.length == 6){
-				let allGood = true;
-				for(let i = 0; i < 6; i++){
-					let cur = cont.children[1].value.charCodeAt(i);
-					if(!((cur > 64 && cur < 91) || (cur > 47 && cur < 58) || (cur > 96 && cur < 123))){
-						allGood = false;
-					}
+const WSaddr = "ws://localhost:3001";
+const HTaddr = "https://localhost:3001";
+let firstWrong, gameCode, nickName, ws;
+
+function createGame(name){
+	if(name.length === 0){
+		firstWrong = firstWrong || document.timeline.currentTime/1000;
+		document.getElementById("nickname").style.animation = "wrong .2s linear "+(document.timeline.currentTime/1000 - firstWrong)+"s 2";
+	}else{
+		document.getElementById("nickname").style.animation = "think 1s cubic-bezier(0.5, 0, 0.5, 1) 0s infinite";
+		let xhp = new XMLHttpRequest();
+		xhp.onreadystatechange = function(){
+			if(this.readyState == 4 && this.status == 201){ // 201 is Created Something (game object)
+				firstWrong = undefined;
+				gameCode = xhp.responseText;
+				nickName = name;
+				document.getElementById("createGame").style.animation = "moveOut 1.5s linear 0s 1";
+				setTimeout(function(){document.getElementById("createGame").classList.remove("active")}, 1500);
+				document.getElementById("lobbyMaster").classList.add("active");
+				document.getElementById("lobbyMaster").style.animation = "moveIn 1.5s linear 0s 1";
+				ws = new WebSocket(WSaddr);
+				ws.onopen = function(e) {
+					ws.send(gameCode+nickName);
 				}
-				if(allGood){
-					cont.style.animation = "think 1s cubic-bezier(0.5, 0, 0.5, 1) 0s infinite";
-					firstWrong = undefined;
-					//send code to database, search for matching game. await response. codeResponse(response, cont);
-					return;
-				}
+			}else{
+				firstWrong = firstWrong || document.timeline.currentTime/1000;
+				document.getElementById("createGame").style.animation = "wrong .2s linear "+(document.timeline.currentTime/1000 - firstWrong)+"s 2";
 			}
-		break;
-		case "nickname":
-			cont.style.animation = "think 1s cubic-bezier(0.5, 0, 0.5, 1) 0s infinite";
-			//send nickname to database.
-			nickName = cont.children[1].value;
-			cont.style.animation = "moveOut 1.5s linear 0s 1";
-			//go to ready screen w/ list of players
+		};
+		xhp.open("POST", "?name="+encodeURIComponent(nickName), true);
+		xhp.send();
 	}
-	
-	if(firstWrong == undefined){firstWrong = document.timeline.currentTime/1000;}
-	cont.style.animation = "wrong .2s linear "+(document.timeline.currentTime/1000 - firstWrong)+"s 2";
 }
-function codeResponse(valid, cont){
-	if(valid){
-		gameCode = cont.children[1].value;
-		cont.style.animation = "moveOut 1.5s linear 0s 1";
-		document.getElementById("password").classList.add("active");
-		document.getElementById("password").style.animation = "moveIn 1s ease-out 0s 1";
-		setTimeout(function(){cont.classList.remove("active");}, 1499);
+
+function submitCode(code){
+	if(code.length == 6 && code.match(/^([0-9]|[a-z])+([0-9a-z]+)$/i)){
+		document.getElementById("code").style.animation = "think 1s cubic-bezier(0.5, 0, 0.5, 1) 0s infinite";
+		let xhp = new XMLHttpRequest();
+		xhp.onreadystatechange = function(){
+			if(this.readyState == 4 && this.status == 204){ //204 is No Content
+				firstWrong = undefined;
+				gameCode = code;
+				document.getElementById("code").style.animation = "moveOut 1.5s linear 0s 1";
+				setTimeout(function(){document.getElementById("code").classList.remove("active")}, 1500);
+				document.getElementById("nickname").classList.add("active");
+				document.getElementById("nickname").style.animation = "moveIn 1.5s linear 0s 1";
+			}else{
+				firstWrong = firstWrong || document.timeline.currentTime/1000;
+				document.getElementById("code").style.animation = "wrong .2s linear "+(document.timeline.currentTime/1000 - firstWrong)+"s 2";
+			}
+		};
+		xhp.open("GET", "?code="+code, true);
+		xhp.send();
+	}else{
+		firstWrong = firstWrong || document.timeline.currentTime/1000;
+		document.getElementById("code").style.animation = "wrong .2s linear "+(document.timeline.currentTime/1000 - firstWrong)+"s 2";
 	}
-	else{
-		if(firstWrong == undefined){firstWrong = document.timeline.currentTime/1000;}
-		cont.style.animation = "wrong .2s linear "+(document.timeline.currentTime/1000 - firstWrong)+"s 2";
+}
+
+function submitName(name){
+	if(name.length === 0){
+		firstWrong = firstWrong || document.timeline.currentTime/1000;
+		document.getElementById("nickname").style.animation = "wrong .2s linear "+(document.timeline.currentTime/1000 - firstWrong)+"s 2";
+	}else{
+		document.getElementById("nickname").style.animation = "think 1s cubic-bezier(0.5, 0, 0.5, 1) 0s infinite";
+		let xhp = new XMLHttpRequest();
+		xhp.onreadystatechange = function(){
+			if(this.readyState == 4 && this.status == 201){ // 201 is Created Something (user object)
+				firstWrong = undefined;
+				nickName = name;
+				document.getElementById("nickname").style.animation = "moveOut 1.5s linear 0s 1";
+				setTimeout(function(){document.getElementById("nickname").classList.remove("active")}, 1500);
+				document.getElementById("lobby").classList.add("active");
+				document.getElementById("lobby").style.animation = "moveIn 1.5s linear 0s 1";
+				ws = new WebSocket(WSaddr);
+				ws.onopen = function(e) {
+					ws.send(gameCode+nickName);
+				}
+			}else{
+				firstWrong = firstWrong || document.timeline.currentTime/1000;
+				document.getElementById("nickname").style.animation = "wrong .2s linear "+(document.timeline.currentTime/1000 - firstWrong)+"s 2";
+			}
+		};
+		xhp.open("POST", "?code="+gameCode+"&name="+encodeURIComponent(nickName), true);
+		xhp.send();
 	}
 }
 function manageCodeInput(event){

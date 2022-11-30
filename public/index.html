@@ -14,13 +14,19 @@
 			<div id="code" class="centered active">
 				<h2>Enter Code</h2>
 				<input maxlength="6" placeholder="ABC123" onkeypress="return manageCodeInput(event);">
-				<button onclick="procede(this.parentElement);">&#10095;</button>
+				<button onclick="submitCode(this.parentElement.children[1].value);">&#10095;</button>
 				<a href="#create">Or Start a New Game&#10095;</a>
+			</div>
+			<div id="createGame" class="centered">
+				<h2>Enter Nickname</h2>
+				<input placeholder="Josh Brown">
+				<button onclick="procede(this.parentElement);">&#10095;</button>
+				<a href="#code">&#10094;Back</a>
 			</div>
 			<div id="nickname" class="centered">
 				<h2>Enter Nickname</h2>
 				<input placeholder="Josh Brown">
-				<button onclick="procede(this.parentElement);">&#10095;</button>
+				<button onclick="submitName(this.parentElement.children[1].value);">&#10095;</button>
 				<a href="#code">&#10094;Back</a>
 			</div>
 			<div id="lobby" class="centered">
