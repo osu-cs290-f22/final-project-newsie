@@ -1,6 +1,6 @@
 const Game = require("./Game");
 
-export class GameManager {
+class GameManager {
     constructor() {
         this.games = new Map();
     }
@@ -30,3 +30,5 @@ export class GameManager {
         return Math.random().toString(36).substring(2, 8).toUpperCase();
     }
 }
+
+module.exports = GameManager;

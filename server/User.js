@@ -1,4 +1,4 @@
-export class User {
+class User {
     constructor(username) {
         this.connected = true;
         this.username = username;
@@ -34,3 +34,5 @@ export class User {
         return connected;
     }
 }
+
+module.exports = User;

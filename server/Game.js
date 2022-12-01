@@ -1,8 +1,7 @@
 const User = require("./User");
-const GameRound = require("./GameRound");
 const WebSocket = require('wss');
 
-export class Game {
+class Game {
     constructor(gamemaster, gameCode) {
         this.gamemaster = gamemaster;
         this.addUser(gamemaster);
@@ -50,3 +49,5 @@ export class Game {
         return true;
     }
 }
+
+module.exports = Game;
