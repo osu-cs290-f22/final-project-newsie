@@ -9,26 +9,32 @@
 		<div class="total"  id="intro">
 			<header>
 				<h1>Newsie</h1>
-				<a href="about.html" target="__blank">Meet the Developers!</a>
+				<a id="subtitle" href="about.html" target="__blank"></a>
 			</header>
 			<div id="code" class="centered active">
 				<h2>Enter Code</h2>
 				<input maxlength="6" placeholder="ABC123" onkeypress="return manageCodeInput(event);">
-				<button onclick="procede(this.parentElement);">&#10095;</button>
-				<a href="#create">Or Start a New Game&#10095;</a>
+				<button onclick="submitCode(this.parentElement.children[1].value.toUpperCase());">&#10095;</button>
+				<a href="#" onclick="goToNewGame();">Or Start a New Game&#10095;</a>
+			</div>
+			<div id="createGame" class="centered">
+				<h2>Enter Nickname</h2>
+				<input placeholder="Josh Brown">
+				<button onclick="createGame(this.parentElement.children[1].value);">&#10095;</button>
+				<a href="#" onclick="backToCode(this.parentElement);">&#10094;Back</a>
 			</div>
 			<div id="nickname" class="centered">
 				<h2>Enter Nickname</h2>
 				<input placeholder="Josh Brown">
-				<button onclick="procede(this.parentElement);">&#10095;</button>
-				<a href="#code">&#10094;Back</a>
+				<button onclick="submitName(this.parentElement.children[1].value);">&#10095;</button>
+				<a href="#" onclick="backToCode(this.parentElement);">&#10094;Back</a>
 			</div>
 			<div id="lobby" class="centered">
 				<h2>Waiting for game to start...</h2>
 				<h3>Users Joined:</h3>
 				<ul>
 				</ul>
-				<a href="#code">&#10094;Leave</a>
+				<a href="#" onclick="backToCode(this.parentElement);">&#10094;Leave</a>
 			</div>
 			<div id="lobbyMaster" class="centered">
 				<h2>Start the game?</h2>
@@ -36,12 +42,12 @@
 				<ul>
 				</ul>
 				<button>Play Ball!</button>
-				<a href="#code">&#10094;Close Game</a>
+				<a href="#" onclick="backToCode(this.parentElement);">&#10094;Close Game</a>
 			</div>
 			<footer>
-				<a href="#tos">Terms of Service</a>
+				<a href="TOS.txt" target="__blank">Terms of Service</a>
 				<p>||</p>
-				<a href="#privy">Privacy Policy</a>
+				<a href="PP.txt" target="__blank">Privacy Policy</a>
 			</footer>
 		</div>
 		<script src="script.js"></script>

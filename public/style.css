@@ -70,7 +70,7 @@ input{
 	background-color: #0007;
 	border-radius: 15px;
 	font-weight: bold;
-	color: white;
+	color: #000a;
 	border-color: var(--border);
 	font-family: monospace;
 	width: 7em;
@@ -78,6 +78,7 @@ input{
 }
 input::placeholder{
 	color: #000a;
+    font-weight: normal;
 }
 input:focus{
 	border-color: white;
@@ -96,7 +97,6 @@ button{
 	height: 2em;
 }
 button:hover{
-	color: white;
 	border-color: white;
 }
 .centered a{
@@ -121,6 +121,9 @@ footer{
 footer a{
 	float: left;
 	color: #000a;
+}
+footer a:hover{
+    font-weight: bold;
 }
 footer p{
 	float: left;
@@ -151,19 +154,21 @@ footer p{
 }
 @keyframes moveOut{
 	0%{
+		transform: translateX(0);
 		--border: #af7;
 	}
 	100%{
-		transform: translate(-100%, 0);
+		transform: translateX(calc(-50vw - 50%));
 		--border: #af7;
 	}
 }
 @keyframes moveIn{
 	0%{
-		transform: translate(100%, 0);
+		transform: translateX(calc(50vw + 50%));
 		--border: #af7;
 	}
 	100%{
+		transform: translateX(0);
 		--border: #af7;
 	}
 }
