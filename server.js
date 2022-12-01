@@ -1,51 +1,28 @@
 const http = require("http")
-const url = require('url');
-const express = require('express');
+const url = require('url')
+const fs = require('fs')
+const express = require('express')
 
 const app = express()
 const port = 3000
 
+const contents = readFileSync("subtitles.txt", 'utf-8')
+const arr = contents.split(/\r?\n/)
 
-//Reads serverData.json and returns an array of gameObjects
-function getExistingGameObjects(){
 
-    const jsonString = fs.readFileSync('./server.json', 'utf8')
-  
-    try {
-        const data = JSON.parse(jsonString)
-        return data.gameObjects
-        
-    } catch(err) {
-        console.log('Error parsing JSON string:', err)
-    }
-}
-
-//Takes a game code and checks to see if it is already in use
+//Takes a game code and checks to see if it is already in use among the existing game objects
 function isExistingGame(gameCode) {
-    var existingGameObjects = getExistingGameCodes()
 
-    for (var i = 0; i < existingGameObjects.length; i++) {
-        if (existingGameObjects[i].gameCode == gameCode) {
-            return true
-        }
-    }
-    return false
 }
 
 //Checks to see if the name is already in use in the game. Returns false if it is.
 function isUniqueName(gameCode, name){
-    var existingGameObjects = getExistingGameObjects()
 
-    for (var i = 0; i < existingGameObjects.length; i++) {
-        if (existingGameObjects[i].gameCode == gameCode) {
-            for (var j = 0; j < existingGameObjects[i].users.length; j++) {
-                if (existingGameObjects[i].users[j].username == name) {
-                    return false
-                }
-            }
-            return true
-        }
-    }
+}
+
+//Takes owner name and creates a game object with them as owner. Returns unique game code.
+function generateGame(ownerName){
+
 }
 
 app.listen(port, function(){
@@ -55,26 +32,63 @@ app.listen(port, function(){
 app.use(express.json())
 app.use(express.static("public"))
 
+//Returns a random subtitle
+app.get("/subtitle", function(req, res, next){
+    const random = Math.floor(Math.random() * arr.length)
+    res.status(200).send(arr[random])
+})
+
 
 //Getting the game code. If there exists a game with that code, respond true.
-app.get("/url", function(req, res, next){
-    const game = req.query.game;
-    res.status(200).send(isExistingGame(game))
-})
+app.get("/", function(req, res, next){
 
+    if(req.query.game){
+        const game = req.query.game;
 
-//Getting the game code and username. If there exists a game with that code and username, respond false.
-app.post("/", function(req, res, next){
-    const game = req.query.game;
-    const name = req.query.name;
+        if (isExistingGame(game)){
+            res.status(204)
+        } else {
+            res.status(400)
+        }
 
-    if(isUniqueName(game, name)){
-        //add user to game
-        res.status(200).send(true)
     }else{
-        res.status(200).send(false)
+        res.status(404)
     }
 })
+
+
+//Getting the game code and username. If there exists a game with that code and username, respond with status 200.
+app.post("/", function(req, res, next){
+
+    if(req.query.game && req.query.name){
+        const game = req.query.game;
+        const name = req.query.name;
+        const decodedName = decodeURIComponent(name)
+
+        if(isUniqueName(game, decodedName)){
+            //add user to game if it's unique
+
+            res.status(201)
+        }else{
+            res.status(200)
+        }
+    }else{
+        next()
+    }
+})
+
+//Creating new game. Takes owner name and creates a game object with them as owner. Returns game code.
+app.post("/", function(req, res, next){
+    if(req.query.name){
+        const ownerName = req.query.name;
+        const decodedOwnerName = decodeURIComponent(ownerName)
+        res.status(201).generateGame(decodedOwnerName)
+    }else{
+        res.status(404)
+    }
+})
+
+
 
 
  
