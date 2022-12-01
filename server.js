@@ -46,13 +46,13 @@ app.get("/", function(req, res, next){
         const game = req.query.game;
 
         if (isExistingGame(game)){
-            res.status(204)
+            res.status(204).send()
         } else {
-            res.status(400)
+            res.status(400).send()
         }
 
     }else{
-        res.status(404)
+        res.status(404).send()
     }
 })
 
@@ -68,9 +68,9 @@ app.post("/", function(req, res, next){
         if(isUniqueName(game, decodedName)){
             //add user to game if it's unique
 
-            res.status(201)
+            res.status(201).send()
         }else{
-            res.status(200)
+            res.status(200).send()
         }
     }else{
         next()
@@ -82,13 +82,11 @@ app.post("/", function(req, res, next){
     if(req.query.name){
         const ownerName = req.query.name;
         const decodedOwnerName = decodeURIComponent(ownerName)
-        res.status(201).generateGame(decodedOwnerName)
+        res.status(201).send(generateGame(decodedOwnerName))
     }else{
-        res.status(404)
+        res.status(404).send()
     }
 })
-
-
 
 
  
