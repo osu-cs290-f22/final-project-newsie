@@ -45,6 +45,10 @@ function createGame(name){
 				ws.onopen = function(e) {
 					ws.send(gameCode+nickName);
 				}
+				ws.onerror = function(e){
+					console.log("WS ERROR: "+e)
+					window.alert("WebSocket Error. Check Console.");
+				}
 			}else{
 				firstWrong = firstWrong || document.timeline.currentTime/1000;
 				document.getElementById("createGame").style.animation = "wrong .2s linear "+(document.timeline.currentTime/1000 - firstWrong)+"s 2";
