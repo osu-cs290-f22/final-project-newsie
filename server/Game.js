@@ -5,6 +5,7 @@ const WebSocket = require('wss');
 export class Game {
     constructor(gamemaster, gameCode) {
         this.gamemaster = gamemaster;
+        this.addUser(gamemaster);
         this.gameCode = gameCode;
         this.users = new Map();
         this.rounds = [];
@@ -41,7 +42,7 @@ export class Game {
 
         websocket.removeAllListeners("message");
         websocket.on("message", (message) => this.processMessage(websocket, message));
-        websocket.on("close", (event) => this.users.get(websocket).setConnected(false));
+        websocket.on("close", (event) => this.users.get(websocket).setConnected(false)); // TODO: Convert from websocket key back to username key
         return true;
     }
 }
