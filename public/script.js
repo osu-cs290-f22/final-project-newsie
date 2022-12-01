@@ -47,7 +47,7 @@ function createGame(name){
 				}
 				ws.onerror = function(e){
 					console.log("WS ERROR: "+e)
-					window.alert("WebSocket Error. Check Console.");
+					window.alert("WebSocket Linkage to the Server Side Code Error. Check Console and fix immediately.");
 				}
 			}else{
 				firstWrong = firstWrong || document.timeline.currentTime/1000;
