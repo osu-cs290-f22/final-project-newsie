@@ -6,7 +6,7 @@ export class User {
         this.websocket = null;
     }
 
-    connectWebsocket(websocket) {
+    setWebsocket(websocket) {
         this.websocket = websocket;
     }
 

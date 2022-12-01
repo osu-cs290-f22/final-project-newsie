@@ -25,9 +25,8 @@ export class Game {
 
     // Returns true if a username is avaliable and false if it is taken
     checkUsername(username) {
-        for(const user of this.users.values()){
-            if(user === username) return false;
-            else if(user instanceof User && user.getUsername() === username) return false;
+        for(let user of this.users.values()){
+            if(user.getUsername() === username) return false;
         }
 
         return true;
@@ -40,9 +39,14 @@ export class Game {
         this.users.set(websocket, this.users.get(username));
         this.users.delete(username);
 
+        this.users.get(websocket).setWebsocket(websocket);
+
         websocket.removeAllListeners("message");
         websocket.on("message", (message) => this.processMessage(websocket, message));
-        websocket.on("close", (event) => this.users.get(websocket).setConnected(false)); // TODO: Convert from websocket key back to username key
+        websocket.on("close", function(event) {
+            this.users.set(this.users.get(websocket).getUsername(), this.users.get(websocket));
+            this.users.delete(websocket);
+        }); // TODO: Convert from websocket key back to username key
         return true;
     }
 }
