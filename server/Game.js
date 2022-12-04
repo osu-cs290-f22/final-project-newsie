@@ -199,10 +199,4 @@ class Game {
     }
 }
 
-let game = new Game("111111", "123456");
-game.startRound();
-console.log(game.rounds[game.roundNumber].isVotingComplete());
-game.endSubmission()
-console.log(game.rounds[game.roundNumber].headline);
-
 module.exports = Game;
