@@ -1,14 +1,22 @@
 const User = require("./User");
 const WebSocket = require('wss');
 
+const GameState = {
+    lobby: "lobby",
+    submission: "submission",
+    roundEnd: "roundEnd",
+    gameEnd: "gameEnd"
+}
+
 class Game {
     constructor(gamemaster, gameCode) {
         this.gamemaster = gamemaster;
-        this.addUser(gamemaster);
         this.gameCode = gameCode;
         this.users = new Map();
         this.rounds = [];
+        this.addUser(gamemaster);
         this.roundNumber = 0;
+        this.gamestate = GameState.lobby;
     }
 
     getCode() {
@@ -45,8 +53,29 @@ class Game {
         websocket.on("close", function(event) {
             this.users.set(this.users.get(websocket).getUsername(), this.users.get(websocket));
             this.users.delete(websocket);
-        }); // TODO: Convert from websocket key back to username key
+        });
         return true;
+    }
+
+    processMessage(websocket, mes) {
+        let user = this.users.get(websocket);
+        let text = mes.toString();
+
+        switch(this.gamestate) {
+            case GameState.lobby:
+                if(user.getUsername() === this.gamemaster){
+                    if(text === "GET THIS VALUE FROM VVILL"){
+                        startRound();
+                    }
+                }
+                break;
+            case GameState.submission:
+                this.rounds[roundNumber].submitImage(user, mes.toJSON());
+        }
+    }
+
+    startRound() {
+
     }
 }
 

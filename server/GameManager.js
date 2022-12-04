@@ -8,6 +8,7 @@ class GameManager {
     newGame(gamemaster) {
         let gamecode = this.generateGameCode();
         this.games.set(gamecode, new Game(gamemaster, gamecode));
+        return gamecode;
     }
 
     checkGameCode(gamecode) {

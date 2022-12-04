@@ -2,6 +2,7 @@ const http = require("http")
 const url = require('url')
 const fs = require('fs')
 const express = require('express')
+const GameManager = require('./server/GameManager')
 
 const app = express()
 const port = 3000
@@ -9,21 +10,7 @@ const port = 3000
 const contents = readFileSync("subtitles.txt", 'utf-8')
 const arr = contents.split(/\r?\n/)
 
-
-//Takes a game code and checks to see if it is already in use among the existing game objects
-function isExistingGame(gameCode) {
-
-}
-
-//Checks to see if the name is already in use in the game. Returns false if it is.
-function isUniqueName(gameCode, name){
-
-}
-
-//Takes owner name and creates a game object with them as owner. Returns unique game code.
-function generateGame(ownerName){
-
-}
+const manager = new GameManager();
 
 app.listen(port, function(){
     console.log("Server listening!")
@@ -45,7 +32,7 @@ app.get("/", function(req, res, next){
     if(req.query.game){
         const game = req.query.game;
 
-        if (isExistingGame(game)){
+        if (manager.checkGameCode(game)){
             res.status(204).send()
         } else {
             res.status(400).send()
@@ -65,7 +52,7 @@ app.post("/", function(req, res, next){
         const name = req.query.name;
         const decodedName = decodeURIComponent(name)
 
-        if(isUniqueName(game, decodedName)){
+        if(manager.checkUsername(game, name)){
             //add user to game if it's unique
 
             res.status(201).send()
@@ -82,7 +69,7 @@ app.post("/", function(req, res, next){
     if(req.query.name){
         const ownerName = req.query.name;
         const decodedOwnerName = decodeURIComponent(ownerName)
-        res.status(201).send(generateGame(decodedOwnerName))
+        res.status(201).send(manager.newGame(decodedOwnerName))
     }else{
         res.status(404).send()
     }
