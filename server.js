@@ -3,6 +3,9 @@ const url = require('url')
 const fs = require('fs')
 const express = require('express')
 const GameManager = require('./server/GameManager')
+const ws = require('ws');
+
+const wss = new ws.Server({noServer: true});
 
 const app = express()
 const port = 3000
@@ -12,8 +15,24 @@ const arr = contents.split(/\r?\n/)
 
 const manager = new GameManager();
 
-app.listen(port, function(){
+const server = app.listen(port, function(){
     console.log("Server listening!")
+})
+
+server.on('upgrade', (request, socket, head) => {
+    wss.handleUpgrade(request, socket, head, socket => {
+        wss.emit('connection', socket, request);
+    });
+});
+
+wss.on('connection', socket => {
+    socket.on('message', message => {
+        let msgStr = message.toString();
+        let code = msgStr.substring(0, 6);
+        let username = msgStr.substring(6);
+
+        manager.connectUser(socket, code, username);
+    })
 })
 
 app.use(express.json())
@@ -53,8 +72,6 @@ app.post("/", function(req, res, next){
         const decodedName = decodeURIComponent(name)
 
         if(manager.checkUsername(game, name)){
-            //add user to game if it's unique
-
             res.status(201).send()
         }else{
             res.status(200).send()
