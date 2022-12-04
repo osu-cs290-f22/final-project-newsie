@@ -194,7 +194,6 @@ class Game {
     }
 
     forceEndVoting() {
-        console.log(this);
         if(this.rounds[this.roundNumber].isVotingComplete()) return;
         this.endVoting();
     }
