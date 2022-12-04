@@ -1,9 +1,11 @@
 const User = require("./User");
+const Roudn = require("./Round");
 const WebSocket = require('wss');
 
 const GameState = {
     lobby: "lobby",
     submission: "submission",
+    voting: "voting",
     roundEnd: "roundEnd",
     gameEnd: "gameEnd"
 }
@@ -59,23 +61,77 @@ class Game {
 
     processMessage(websocket, mes) {
         let user = this.users.get(websocket);
-        let text = mes.toString();
 
         switch(this.gamestate) {
+            case GameState.roundEnd:
             case GameState.lobby:
                 if(user.getUsername() === this.gamemaster){
-                    if(text === "GET THIS VALUE FROM VVILL"){
+                    if(mes.toString() === "GET THIS VALUE FROM VVILL"){
                         startRound();
                     }
                 }
                 break;
             case GameState.submission:
-                this.rounds[roundNumber].submitImage(user, mes.toJSON());
+                this.rounds[roundNumber].submitImage(user, JSON.parse(mes));
+                if(this.rounds[roundNumber].isSubmissionComplete()){
+                    endSubmission();
+                }
+                break;
+            case GameState.voting:
+                this.rounds[roundNumber].submitVotes(user, JSON.parse(mes));
+                if(this.rounds[roundNumber].isVotingComplete()){
+                    endVoting();
+                }
+                break;
+            default:
+                websocket.send("ERROR: Currently not accepting messages, in state: " + this.gamestate);
+                break;
         }
     }
 
     startRound() {
 
+    }
+
+    endSubmission() {
+        this.gamestate = GameState.voting;
+        this.rounds[this.roundNumber].setSubmissionComplete(true);
+
+        let imageData = [];
+        for(submission in this.rounds[this.roundNumber].getSubmissions()){
+            imageData.push(submission.image);
+        }
+
+        let startDate = new Date();
+        let endDate = new Date();
+        startDate.setSeconds(startDate.getSeconds() + 5);
+        endDate.setSeconds(endDate.getSeconds + 65);
+
+        let data = {
+            images: imageData,
+            voteStart: startDate.getTime(),
+            voteEnd: endDate.getTime(),
+            roundNumber: this.roundNumber
+        };
+
+        let jsonString = JSON.stringify(data);
+        for(ws in this.users.keys()){
+            ws.send(jsonString);
+        }
+    }
+
+    forceEndSubmission() {
+        if(this.rounds[this.roundNumber].isSubmissionComplete()) return;
+
+        this.endSubmission();
+    }
+
+    endVoting() {
+        this.gamestate = GameState.roundEnd;
+        this.rounds[this.roundNumber].setVotingComplete(true);
+
+        this.rounds[this.roundNumber].tallyVotes();
+        let talliedVotes = this.rounds[this.roundNumber].getTalliedVotes();
     }
 }
 
