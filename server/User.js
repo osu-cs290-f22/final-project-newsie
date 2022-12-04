@@ -1,12 +1,13 @@
 class User {
     constructor(username) {
-        this.connected = true;
+        this.connected = false;
         this.username = username;
         this.points = 0;
         this.websocket = null;
     }
 
     setWebsocket(websocket) {
+        this.connected = true;
         this.websocket = websocket;
     }
 

@@ -11,9 +11,13 @@ class Round {
         this.headline = this.randomHeadline();
     }
 
+    getHeadline() {
+        return this.headline;
+    }
+
     randomHeadline() {
-        const data = fs.readFileSync("../headlines.txt");
-        const lines = data.split("\n");
+        const data = fs.readFileSync("./headlines.txt");
+        const lines = data.toString().split("\n");
         return lines[Math.floor(Math.random() * lines.length)];
     }
 
@@ -21,7 +25,7 @@ class Round {
         if(this.submissionComplete)
 
         this.submissions.push({
-            username: user.username,
+            user: user,
             image: json.image,
             votes: 0
         })
@@ -44,7 +48,7 @@ class Round {
         if(this.votingComplete) return;
 
         this.votes.push({
-            username: user.username,
+            user: user,
             votes: json.votes
         });
     }
