@@ -63,13 +63,13 @@ class Game {
 
     processMessage(websocket, mes) {
         let user = this.users.get(websocket);
-        let data = mes.data;
+        let data = mes.toString();
 
         switch(this.gamestate) {
             case GameState.roundEnd:
             case GameState.lobby:
                 if(user.getUsername() === this.gamemaster){
-                    if(mes.toString() === "Start Game"){
+                    if(data === "Start Game"){
                         startRound();
                     }
                 }
