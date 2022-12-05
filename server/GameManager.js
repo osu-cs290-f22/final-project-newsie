@@ -1,6 +1,8 @@
 const Game = require("./Game");
 
+const instance = new GameManager();
 class GameManager {
+    
     constructor() {
         this.games = new Map();
     }
@@ -9,6 +11,10 @@ class GameManager {
         let gamecode = this.generateGameCode();
         this.games.set(gamecode, new Game(gamemaster, gamecode));
         return gamecode;
+    }
+
+    removeGame(gamecode) {
+        this.games.delete(gamecode);
     }
 
     checkGameCode(gamecode) {
@@ -29,6 +35,10 @@ class GameManager {
 
     generateGameCode() {
         return Math.random().toString(36).substring(2, 8).toUpperCase();
+    }
+
+    static getInstance() {
+        return instance;
     }
 }
 

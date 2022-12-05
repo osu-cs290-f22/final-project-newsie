@@ -13,7 +13,7 @@ const port = 3000
 const contents = readFileSync("subtitles.txt", 'utf-8')
 const arr = contents.split(/\r?\n/)
 
-const manager = new GameManager();
+const manager = GameManager.getInstance();
 
 const server = app.listen(port, function(){
     console.log("Server listening!")

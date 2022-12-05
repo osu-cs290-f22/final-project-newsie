@@ -1,7 +1,8 @@
 const User = require("./User");
-const Roudn = require("./Round");
 const WebSocket = require('ws');
 const Round = require("./Round");
+const GameManager = require("./GameManager");
+
 
 const GameState = {
     lobby: "lobby",
@@ -94,22 +95,28 @@ class Game {
 
     updateUsers() {
         let usernames = []
-        for(let user in this.users.values()) {
+        for(let user of this.users.values()) {
             usernames.push(user.getUsername());
         }
 
         let data = {
+            id: "lobby",
             usernames: usernames,
             gamemaster: this.gamemaster
         }
 
         jsonString = JSON.stringify(data);
-        for(ws in this.users.keys()) {
+        for(ws of this.users.keys()) {
             if(ws instanceof WebSocket) ws.send(jsonString);
         }
     }
 
     startRound() {
+        if(this.roundNumber >= 4) {
+            this.endGame()
+            return;
+        }
+
         this.rounds.push(new Round(this.users.size));
         this.roundNumber++;
         this.gamestate = GameState.submission;
@@ -121,6 +128,7 @@ class Game {
         setTimeout(() => { this.forceEndSubmission() }, endDate - Date.now());
 
         let data = {
+            id: "round",
             headline: this.rounds[this.roundNumber].getHeadline(),
             roundStart: startDate.getTime(),
             roundEnd: endDate.getTime(),
@@ -128,7 +136,7 @@ class Game {
         };
 
         let jsonString = JSON.stringify(data);
-        for(ws in this.users.keys()) {
+        for(ws of this.users.keys()) {
             if(ws instanceof WebSocket) ws.send(jsonString);
         }
     }
@@ -138,7 +146,7 @@ class Game {
         this.rounds[this.roundNumber].setSubmissionComplete(true);
 
         let imageData = [];
-        for(submission in this.rounds[this.roundNumber].getSubmissions()){
+        for(submission of this.rounds[this.roundNumber].getSubmissions()){
             imageData.push(submission.image);
         }
 
@@ -148,6 +156,7 @@ class Game {
         endDate.setSeconds(endDate.getSeconds() + 65);
         setTimeout(() => { this.forceEndVoting() }, endDate - Date.now());
         let data = {
+            id: "images",
             images: imageData,
             voteStart: startDate.getTime(),
             voteEnd: endDate.getTime(),
@@ -155,7 +164,7 @@ class Game {
         };
 
         let jsonString = JSON.stringify(data);
-        for(ws in this.users.keys()){
+        for(ws of this.users.keys()){
             if(ws instanceof WebSocket) ws.send(jsonString);
         }
     }
@@ -175,20 +184,21 @@ class Game {
 
         let pointsEarned = {};
         let currentPoints = {}
-        for(submission in talliedVotes) {
+        for(submission of talliedVotes) {
             pointsEarned[submission.user.getUsername()] = submission.votes;
             submission.user.addPoints(submission.votes);
             currentPoints[submission.user.getUsername()] = submission.user.getPoints();
         }
 
         let data = {
+            id: "results",
             roundNumber: this.roundNumber,
             currentPoints: currentPoints,
             pointsEarned: pointsEarned
         };
 
         let jsonString = JSON.stringify(data)
-        for(ws in this.users.keys()) {
+        for(ws of this.users.keys()) {
             if(ws instanceof WebSocket) ws.send(jsonString);
         }
     }
@@ -196,6 +206,29 @@ class Game {
     forceEndVoting() {
         if(this.rounds[this.roundNumber].isVotingComplete()) return;
         this.endVoting();
+    }
+
+    endGame() {
+        let topUser = this.users[0];
+
+        for(let user of this.users.values()) {
+            if(user.getPoints() > topUser.getPoints()) topUser = user;
+        }
+
+        let data = {
+            id: "end",
+            winner: topUser.getUsername()
+        }
+
+        let jsonString = JSON.stringify(data);
+        for(ws of this.users.keys()) {
+            if(ws instanceof WebSocket) {
+                ws.send(jsonString);
+                ws.close();
+            }
+        }
+
+        GameManager.getInstance().removeGame(this.gameCode);
     }
 }
 
