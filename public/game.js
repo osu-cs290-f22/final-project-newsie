@@ -1,6 +1,6 @@
 let submitCanvas = document.createElement('canvas');
-submitCavas.width = 800;
-submitCavas.height = 600;
+submitCanvas.width = 800;
+submitCanvas.height = 600;
 let voteOrder = [];
 
 function updateUserList(e){
