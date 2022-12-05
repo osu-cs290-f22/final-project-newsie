@@ -6,6 +6,7 @@ class Round {
         this.players = players;
         this.submissions = [];
         this.votes = [];
+        this.usedHeadlines = [];
         this.submissionComplete = false;
         this.votingComplete = false;
         this.headline = this.randomHeadline();
@@ -18,7 +19,14 @@ class Round {
     randomHeadline() {
         const data = fs.readFileSync("./headlines.txt");
         const lines = data.toString().split("\n");
-        return lines[Math.floor(Math.random() * lines.length)];
+        var headline = lines[Math.floor(Math.random() * lines.length)];
+
+        while(this.usedHeadlines.includes(headline)) {
+            headline = lines[Math.floor(Math.random() * lines.length)];
+        }
+
+        this.usedHeadlines.push(headline);
+        return headline
     }
 
     submitImage(user, json) {
