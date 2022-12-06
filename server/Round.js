@@ -2,13 +2,13 @@ const User = require("./User");
 const fs = require('fs');
 
 class Round {
-    constructor(players) {
+    constructor(players, usedHeadlines) {
         this.players = players;
         this.submissions = [];
         this.votes = [];
-        this.usedHeadlines = [];
         this.submissionComplete = false;
         this.votingComplete = false;
+        this.usedHeadlines = usedHeadlines;
         this.headline = this.randomHeadline();
     }
 
