@@ -136,7 +136,7 @@ class Game {
 		    let endDate = new Date();
 		    startDate.setSeconds(startDate.getSeconds() + 5);
 		    endDate.setSeconds(endDate.getSeconds() + 125);
-		    setTimeout(() => { this.forceEndSubmission() }, endDate - Date.now());
+		    this.roundTimeout = setTimeout(() => { this.forceEndSubmission() }, endDate - Date.now());
 
 		    let data = {
 		        id: "round",
@@ -155,6 +155,7 @@ class Game {
 
     endSubmission() {
     	if(this.gamestate == GameState.submission){
+    		clearTimeout(this.roundTimeout);
 		    this.gamestate = GameState.voting;
 		    this.rounds[this.roundNumber].setSubmissionComplete(true);
 
@@ -167,7 +168,7 @@ class Game {
 		    let endDate = new Date();
 		    startDate.setSeconds(startDate.getSeconds() + 5);
 		    endDate.setSeconds(endDate.getSeconds() + 65);
-		    setTimeout(() => { this.forceEndVoting() }, endDate - Date.now());
+		    this.endTimeout = setTimeout(() => { this.forceEndVoting() }, endDate - Date.now());
 		    let data = {
 		        id: "images",
 		        images: imageData,
@@ -191,6 +192,7 @@ class Game {
 
     endVoting() {
     	if(this.gamestate == GameState.voting){
+    		clearTimeout(this.endTimeout);
 		    this.gamestate = GameState.roundEnd;
 		    this.rounds[this.roundNumber].setVotingComplete(true);
 
