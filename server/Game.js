@@ -207,6 +207,7 @@ class Game {
 		        currentPoints[submission.user.getUsername()] = submission.user.getPoints();
 		    }
 			let winningSubmission = this.rounds[this.roundNumber].getWinningSubmission();
+			if(!winningSubmission.user){return;}
 		    let data = {
 		        id: "results",
 		        roundNumber: this.roundNumber,

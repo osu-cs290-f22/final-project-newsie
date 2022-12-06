@@ -55,6 +55,7 @@ function newRound(d){
             document.getElementById("prompt").getElementsByTagName("h3")[0].innerText = Math.floor((d.roundEnd - new Date())/60000) + ":" + (Math.floor(((d.roundEnd - new Date()) % 60000) / 1000) + "").padStart(2,'0');
         }
         else if(new Date() >= new Date(d.roundEnd)){
+        	console.log(new Date() +" >= "+ new Date(d.roundEnd));
             document.getElementById("prompt").getElementsByTagName("h3")[0].innerText = "00:00";
             clearInterval(submitInterval);
         }
@@ -129,6 +130,7 @@ function populateImages(d){
             document.getElementById("vote").getElementsByTagName("h3")[0].innerText = Math.floor((new Date(d.voteEnd) - Date.now())/60000) + ":" + (Math.floor(((new Date(d.voteEnd) - Date.now()) % 60000) / 1000) + "").padStart(2,'0');
         }
         else if(new Date() >= new Date(d.roundEnd)){
+        	console.log(new Date() +" >= "+ new Date(d.roundEnd));
             document.getElementById("vote").getElementsByTagName("h3")[0].innerText = "00:00";
             clearInterval(voteInterval);
         }
