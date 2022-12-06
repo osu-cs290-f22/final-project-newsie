@@ -121,7 +121,7 @@ function submitName(name){
 }
 function manageCodeInput(event){
 	if(event.charCode == 13){
-		submitCode(document.getElementById("code").children[1].toUpperCase());
+		submitCode(document.getElementById("code").children[1].value.toUpperCase());
 	}
 	else{
 		return (event.charCode > 64 && event.charCode < 91)
