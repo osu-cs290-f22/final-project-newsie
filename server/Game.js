@@ -122,61 +122,65 @@ class Game {
     }
 
     startRound() {
-        this.roundNumber++;
-        if(this.roundNumber >= 4) {
-            this.endGame()
-            return;
-        }
+    	if(this.gamestate == GameState.roundEnd || this.gamestate == GameState.lobby){
+		    this.roundNumber++;
+		    if(this.roundNumber >= 4) {
+		        this.endGame()
+		        return;
+		    }
 
-        this.rounds.push(new Round(this.users.size));
-        this.gamestate = GameState.submission;
+		    this.rounds.push(new Round(this.users.size));
+		    this.gamestate = GameState.submission;
 
-        let startDate = new Date();
-        let endDate = new Date();
-        startDate.setSeconds(startDate.getSeconds() + 5);
-        endDate.setSeconds(endDate.getSeconds() + 125);
-        setTimeout(() => { this.forceEndSubmission() }, endDate - Date.now());
+		    let startDate = new Date();
+		    let endDate = new Date();
+		    startDate.setSeconds(startDate.getSeconds() + 5);
+		    endDate.setSeconds(endDate.getSeconds() + 125);
+		    setTimeout(() => { this.forceEndSubmission() }, endDate - Date.now());
 
-        let data = {
-            id: "round",
-            headline: this.rounds[this.roundNumber].getHeadline(),
-            roundStart: startDate.getTime(),
-            roundEnd: endDate.getTime(),
-            roundNumber: this.roundNumber
-        };
+		    let data = {
+		        id: "round",
+		        headline: this.rounds[this.roundNumber].getHeadline(),
+		        roundStart: startDate.getTime(),
+		        roundEnd: endDate.getTime(),
+		        roundNumber: this.roundNumber
+		    };
 
-        let jsonString = JSON.stringify(data);
-        for(let ws of this.users.keys()) {
-            if(ws instanceof WebSocket) ws.send(jsonString);
-        }
+		    let jsonString = JSON.stringify(data);
+		    for(let ws of this.users.keys()) {
+		        if(ws instanceof WebSocket) ws.send(jsonString);
+		    }
+		}
     }
 
     endSubmission() {
-        this.gamestate = GameState.voting;
-        this.rounds[this.roundNumber].setSubmissionComplete(true);
+    	if(this.gamestate == GameState.submission){
+		    this.gamestate = GameState.voting;
+		    this.rounds[this.roundNumber].setSubmissionComplete(true);
 
-        let imageData = [];
-        for(let submission of this.rounds[this.roundNumber].getSubmissions()){
-            imageData.push(submission.image);
-        }
+		    let imageData = [];
+		    for(let submission of this.rounds[this.roundNumber].getSubmissions()){
+		        imageData.push(submission.image);
+		    }
 
-        let startDate = new Date();
-        let endDate = new Date();
-        startDate.setSeconds(startDate.getSeconds() + 5);
-        endDate.setSeconds(endDate.getSeconds() + 65);
-        setTimeout(() => { this.forceEndVoting() }, endDate - Date.now());
-        let data = {
-            id: "images",
-            images: imageData,
-            voteStart: startDate.getTime(),
-            voteEnd: endDate.getTime(),
-            roundNumber: this.roundNumber
-        };
+		    let startDate = new Date();
+		    let endDate = new Date();
+		    startDate.setSeconds(startDate.getSeconds() + 5);
+		    endDate.setSeconds(endDate.getSeconds() + 65);
+		    setTimeout(() => { this.forceEndVoting() }, endDate - Date.now());
+		    let data = {
+		        id: "images",
+		        images: imageData,
+		        voteStart: startDate.getTime(),
+		        voteEnd: endDate.getTime(),
+		        roundNumber: this.roundNumber
+		    };
 
-        let jsonString = JSON.stringify(data);
-        for(let ws of this.users.keys()){
-            if(ws instanceof WebSocket) ws.send(jsonString);
-        }
+		    let jsonString = JSON.stringify(data);
+		    for(let ws of this.users.keys()){
+		        if(ws instanceof WebSocket) ws.send(jsonString);
+		    }
+		}
     }
 
     forceEndSubmission() {
@@ -186,33 +190,35 @@ class Game {
     }
 
     endVoting() {
-        this.gamestate = GameState.roundEnd;
-        this.rounds[this.roundNumber].setVotingComplete(true);
+    	if(this.gamestate == GameState.voting){
+		    this.gamestate = GameState.roundEnd;
+		    this.rounds[this.roundNumber].setVotingComplete(true);
 
-        this.rounds[this.roundNumber].tallyVotes();
-        let talliedVotes = this.rounds[this.roundNumber].getTalliedVotes();
+		    this.rounds[this.roundNumber].tallyVotes();
+		    let talliedVotes = this.rounds[this.roundNumber].getTalliedVotes();
 
-        let pointsEarned = {};
-        let currentPoints = {}
-        for(let submission of talliedVotes) {
-            pointsEarned[submission.user.getUsername()] = submission.votes;
-            submission.user.addPoints(submission.votes);
-            currentPoints[submission.user.getUsername()] = submission.user.getPoints();
-        }
-		let winningSubmission = this.rounds[this.roundNumber].getWinningSubmission();
-        let data = {
-            id: "results",
-            roundNumber: this.roundNumber,
-            currentPoints: currentPoints,
-            pointsEarned: pointsEarned,
-            winningImage: winningSubmission.image,
-            winner: winningSubmission.user.getUsername(),
-        };
+		    let pointsEarned = {};
+		    let currentPoints = {}
+		    for(let submission of talliedVotes) {
+		        pointsEarned[submission.user.getUsername()] = submission.votes;
+		        submission.user.addPoints(submission.votes);
+		        currentPoints[submission.user.getUsername()] = submission.user.getPoints();
+		    }
+			let winningSubmission = this.rounds[this.roundNumber].getWinningSubmission();
+		    let data = {
+		        id: "results",
+		        roundNumber: this.roundNumber,
+		        currentPoints: currentPoints,
+		        pointsEarned: pointsEarned,
+		        winningImage: winningSubmission.image,
+		        winner: winningSubmission.user.getUsername(),
+		    };
 
-        let jsonString = JSON.stringify(data)
-        for(let ws of this.users.keys()) {
-            if(ws instanceof WebSocket) ws.send(jsonString);
-        }
+		    let jsonString = JSON.stringify(data)
+		    for(let ws of this.users.keys()) {
+		        if(ws instanceof WebSocket) ws.send(jsonString);
+		    }
+		}
     }
 
     forceEndVoting() {
@@ -221,27 +227,29 @@ class Game {
     }
 
     endGame() {
-        let topUser = this.users.values().next().value;
+    	if(this.gamestate == GameState.roundEnd){
+		    let topUser = this.users.values().next().value;
 
-        for(let user of this.users.values()) {
-            if(user.getPoints() > topUser.getPoints()) topUser = user;
-        }
+		    for(let user of this.users.values()) {
+		        if(user.getPoints() > topUser.getPoints()) topUser = user;
+		    }
 
-        let data = {
-            id: "end",
-            winner: topUser.getUsername()
-        }
+		    let data = {
+		        id: "end",
+		        winner: topUser.getUsername()
+		    }
 
-        let jsonString = JSON.stringify(data);
-        for(let ws of this.users.keys()) {
-            if(ws instanceof WebSocket) {
-                ws.send(jsonString);
-                ws.close();
-            }
-        }
-
-        this.gameManager.removeGame(this.gameCode);
-        this.roundNumber = -1;
+		    let jsonString = JSON.stringify(data);
+		    for(let ws of this.users.keys()) {
+		        if(ws instanceof WebSocket) {
+		            ws.send(jsonString);
+		            ws.close();
+		        }
+		    }
+			this.gamestate = GameState.gameEnd;
+		    this.gameManager.removeGame(this.gameCode);
+		    this.roundNumber = -1;
+		}
     }
 }
 
