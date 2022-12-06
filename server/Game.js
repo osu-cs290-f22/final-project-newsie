@@ -18,6 +18,7 @@ class Game {
         this.gameCode = gameCode;
         this.users = new Map();
         this.rounds = [];
+        this.usedHeadlines = []
         this.addUser(gamemaster);
         this.roundNumber = -1;
         this.gamestate = GameState.lobby;

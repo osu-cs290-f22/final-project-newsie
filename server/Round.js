@@ -18,7 +18,8 @@ class Round {
     randomHeadline() {
         const data = fs.readFileSync("./headlines.txt");
         const lines = data.toString().split("\n");
-        return lines[Math.floor(Math.random() * lines.length)];
+        var headline = lines[Math.floor(Math.random() * lines.length)];
+        return headline
     }
 
     submitImage(user, json) {
