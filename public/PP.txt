@@ -6,5 +6,7 @@ What information do we share?
 
 We do not share information with anyone... that we know of.
 
+None of your data is encrypted. We do not guarantee any security
+
 
 

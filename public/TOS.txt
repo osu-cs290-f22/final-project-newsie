@@ -11,3 +11,7 @@ by using the newsie website, you surrender your soul to its developers.
 3. Have Fun
 
 You must have all the fun!!!
+
+4. Data security
+
+None of your data is encrypted. We do not guarantee any security. 
