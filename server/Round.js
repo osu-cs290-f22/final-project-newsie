@@ -19,11 +19,11 @@ class Round {
     randomHeadline() {
         const data = fs.readFileSync("./headlines.txt");
         const lines = data.toString().split("\n");
-        var headline = lines[Math.floor(Math.random() * lines.length)];
 
-        while(this.usedHeadlines.includes(headline)) {
-            headline = lines[Math.floor(Math.random() * lines.length)];
-        }
+        do{
+            var headline = lines[Math.floor(Math.random() * lines.length)];
+            
+        }while(this.usedHeadlines.includes(headline))
 
         this.usedHeadlines.push(headline);
         return headline
