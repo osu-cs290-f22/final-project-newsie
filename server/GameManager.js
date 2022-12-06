@@ -1,6 +1,8 @@
 const Game = require("./Game");
 
-export class GameManager {
+const instance = new GameManager();
+class GameManager {
+    
     constructor() {
         this.games = new Map();
     }
@@ -8,6 +10,11 @@ export class GameManager {
     newGame(gamemaster) {
         let gamecode = this.generateGameCode();
         this.games.set(gamecode, new Game(gamemaster, gamecode));
+        return gamecode;
+    }
+
+    removeGame(gamecode) {
+        this.games.delete(gamecode);
     }
 
     checkGameCode(gamecode) {
@@ -29,4 +36,10 @@ export class GameManager {
     generateGameCode() {
         return Math.random().toString(36).substring(2, 8).toUpperCase();
     }
+
+    static getInstance() {
+        return instance;
+    }
 }
+
+module.exports = GameManager;
