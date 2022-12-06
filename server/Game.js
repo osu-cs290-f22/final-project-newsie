@@ -55,7 +55,6 @@ class Game {
         websocket.removeAllListeners("message");
         websocket.on("message", (message) => this.processMessage(websocket, message));
         websocket.on("close", function(event) {
-        	console.log(gameThis);
             gameThis.users.set(gameThis.users.get(websocket).getUsername(), gameThis.users.get(websocket));
             gameThis.users.delete(websocket);
         });
@@ -83,9 +82,7 @@ class Game {
                 }
                 break;
             case GameState.submission:
-                console.log(JSON.parse(data).image);
                 this.rounds[this.roundNumber].submitImage(user, JSON.parse(data));
-                console.log(this.rounds[this.roundNumber].isSubmissionComplete());
                 if(this.rounds[this.roundNumber].isSubmissionComplete()){
                     this.endSubmission();
                 }
@@ -186,6 +183,7 @@ class Game {
 
     endVoting() {
         this.gamestate = GameState.roundEnd;
+        console.log("state set to round end");
         this.rounds[this.roundNumber].setVotingComplete(true);
 
         this.rounds[this.roundNumber].tallyVotes();
@@ -213,6 +211,7 @@ class Game {
     }
 
     forceEndVoting() {
+        console.log("ending voting by force");
         if(this.rounds[this.roundNumber].isVotingComplete()) return;
         this.endVoting();
     }
