@@ -165,6 +165,7 @@ function submitVotes(){
 }
 
 function viewResult(d){
+	voteOrder = [];
     document.getElementsByClassName("active")[0].style.animation = "moveOut 1s linear 0s 1";
     setTimeout(function(e){e.classList.remove("active")}(document.getElementsByClassName("active")[0]), 1000);
     document.getElementById("results"+(owner?"Owner":"")).parentElement.classList.add("active");

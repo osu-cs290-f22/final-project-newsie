@@ -15,6 +15,7 @@ function backToCode(from){
 	setTimeout(function(){from.parentElement.classList.remove("active")}, 1000);
 	document.getElementById("code").parentElement.classList.add("active");
 	document.getElementById("code").parentElement.style.animation = "moveIn 1s linear 0s 1";
+	owner = false;
 }
 function goToNewGame(){
 	firstWrong = undefined;
@@ -62,6 +63,7 @@ function createGame(name){
 }
 
 function submitCode(code){
+	owner = false;
 	if(code.length == 6 && code.match(/^([0-9]|[A-Z])+([0-9A-Z]+)$/i)){
 		document.getElementById("code").parentElement.style.animation = "think 1s cubic-bezier(0.5, 0, 0.5, 1) 0s infinite";
 		let xhp = new XMLHttpRequest();
@@ -119,7 +121,7 @@ function submitName(name){
 }
 function manageCodeInput(event){
 	if(event.charCode == 13){
-		submitCode(this.value.toUpperCase());
+		submitCode(document.getElementById("code").children[1].toUpperCase());
 	}
 	else{
 		return (event.charCode > 64 && event.charCode < 91)

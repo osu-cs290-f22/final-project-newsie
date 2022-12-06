@@ -132,8 +132,8 @@ class Game {
 		    this.rounds.push(new Round(this.users.size));
 		    this.gamestate = GameState.submission;
 
-		    let startDate = new Date();
-		    let endDate = new Date();
+		    let startDate = Date.now();
+		    let endDate = Date.now();
 		    startDate.setSeconds(startDate.getSeconds() + 5);
 		    endDate.setSeconds(endDate.getSeconds() + 125);
 		    setTimeout(() => { this.forceEndSubmission() }, endDate - Date.now());
@@ -163,8 +163,8 @@ class Game {
 		        imageData.push(submission.image);
 		    }
 
-		    let startDate = new Date();
-		    let endDate = new Date();
+		    let startDate = Date.now();
+		    let endDate = Date.now();
 		    startDate.setSeconds(startDate.getSeconds() + 5);
 		    endDate.setSeconds(endDate.getSeconds() + 65);
 		    setTimeout(() => { this.forceEndVoting() }, endDate - Date.now());
