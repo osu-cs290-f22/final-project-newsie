@@ -1,15 +1,14 @@
-const WSaddr = "wss://newsie.vvill.ga:420";
-const HTaddr = "https://newsie.vvill.ga:420/";
+const WSaddr = "ws://66.94.127.226:3001";
+const HTaddr = "http://newsie.vvill.ga/";
 let firstWrong, gameCode, nickName, ws, owner;
 
-document.addEventListener("load", function(){
-	let xhp = new XMLHttpRequest();
-	xhp.onreadystatechange = function(){
-		document.getElementById("subtitle").innerHTML = xhp.responseText || "This code is full of errors! :)";
-	}
-	xhp.open("get", HTaddr+"subtitle", true);
-	xhp.send();
-});
+let xhp = new XMLHttpRequest();
+xhp.onreadystatechange = function(){
+	document.getElementById("subtitle").innerText = xhp.responseText || "This code is full of errors! :)";
+}
+xhp.open("get", HTaddr+"subtitle", true);
+xhp.send();
+
 function backToCode(from){
 	firstWrong = undefined;
 	from.parentElement.style.animation = "moveOut 1s linear 0s 1";
@@ -50,6 +49,7 @@ function createGame(name){
 					console.error("WebSocket ERROR: "+e)
 					window.alert("Error connecting to server.");
 				}
+       	 		ws.addEventListener("message", handleWS, false);
 				owner = true;
 			}else{
 				firstWrong = firstWrong || document.timeline.currentTime/1000;
@@ -62,7 +62,7 @@ function createGame(name){
 }
 
 function submitCode(code){
-	if(code.length == 6 && code.match(/^([0-9]|[a-z])+([0-9a-z]+)$/i)){
+	if(code.length == 6 && code.match(/^([0-9]|[A-Z])+([0-9A-Z]+)$/i)){
 		document.getElementById("code").parentElement.style.animation = "think 1s cubic-bezier(0.5, 0, 0.5, 1) 0s infinite";
 		let xhp = new XMLHttpRequest();
 		xhp.onreadystatechange = function(){
@@ -70,15 +70,17 @@ function submitCode(code){
 				firstWrong = undefined;
 				gameCode = code;
 				document.getElementById("code").parentElement.style.animation = "moveOut 1s linear 0s 1";
-				setTimeout(function(){document.getElementById("code").classList.remove("active")}, 1000);
+				setTimeout(function(){document.getElementById("code").parentElement.classList.remove("active")}, 1000);
 				document.getElementById("nickname").parentElement.classList.add("active");
 				document.getElementById("nickname").parentElement.style.animation = "moveIn 1s linear 0s 1";
 			}else{
+				console.log(this.readyState + " , " +this.status);
+				console.log(this.responseText);
 				firstWrong = firstWrong || document.timeline.currentTime/1000;
 				document.getElementById("code").parentElement.style.animation = "wrong .2s linear "+(document.timeline.currentTime/1000 - firstWrong)+"s 2";
 			}
 		};
-		xhp.open("GET", HTaddr+"?code="+code, true);
+		xhp.open("GET", HTaddr+"?game="+code, true);
 		xhp.send();
 	}else{
 		firstWrong = firstWrong || document.timeline.currentTime/1000;
@@ -105,13 +107,13 @@ function submitName(name){
 				ws.onopen = function(e) {
 					ws.send(gameCode+nickName);
 				}
-				ws.addEventListener("message", updateUserList, true);
+				ws.addEventListener("message", handleWS, true);
 			}else{
 				firstWrong = firstWrong || document.timeline.currentTime/1000;
 				document.getElementById("nickname").parentElement.style.animation = "wrong .2s linear "+(document.timeline.currentTime/1000 - firstWrong)+"s 2";
 			}
 		};
-		xhp.open("POST", HTaddr+"?code="+gameCode+"&name="+encodeURIComponent(name), true);
+		xhp.open("POST", HTaddr+"?game="+gameCode+"&name="+encodeURIComponent(name), true);
 		xhp.send();
 	}
 }

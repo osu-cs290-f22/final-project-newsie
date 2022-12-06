@@ -8,9 +8,9 @@ const ws = require('ws');
 const wss = new ws.Server({noServer: true});
 
 const app = express()
-const port = 3000
+const port = 3001
 
-const contents = readFileSync("subtitles.txt", 'utf-8')
+const contents = fs.readFileSync("subtitles.txt", 'utf-8')
 const arr = contents.split(/\r?\n/)
 
 const manager = GameManager.getInstance();
@@ -30,13 +30,10 @@ wss.on('connection', socket => {
         let msgStr = message.toString();
         let code = msgStr.substring(0, 6);
         let username = msgStr.substring(6);
-
+        
         manager.connectUser(socket, code, username);
     })
 })
-
-app.use(express.json())
-app.use(express.static("public"))
 
 //Returns a random subtitle
 app.get("/subtitle", function(req, res, next){
@@ -58,7 +55,7 @@ app.get("/", function(req, res, next){
         }
 
     }else{
-        res.status(404).send()
+        next();
     }
 })
 
@@ -92,5 +89,8 @@ app.post("/", function(req, res, next){
     }
 })
 
+
+
+app.use(express.static("public"))
 
  
