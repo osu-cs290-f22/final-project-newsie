@@ -18,6 +18,7 @@ class Game {
         this.gameCode = gameCode;
         this.users = new Map();
         this.rounds = [];
+        this.usedHeadlines = []
         this.addUser(gamemaster);
         this.roundNumber = -1;
         this.gamestate = GameState.lobby;
@@ -117,7 +118,7 @@ class Game {
             return;
         }
 
-        this.rounds.push(new Round(this.users.size));
+        this.rounds.push(new Round(this.users.size, this.usedHeadlines));
         this.roundNumber++;
         this.gamestate = GameState.submission;
 

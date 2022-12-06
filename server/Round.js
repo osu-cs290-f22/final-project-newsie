@@ -2,12 +2,13 @@ const User = require("./User");
 const fs = require('fs');
 
 class Round {
-    constructor(players) {
+    constructor(players, usedHeadlines) {
         this.players = players;
         this.submissions = [];
         this.votes = [];
         this.submissionComplete = false;
         this.votingComplete = false;
+        this.usedHeadlines = usedHeadlines;
         this.headline = this.randomHeadline();
     }
 
@@ -18,7 +19,14 @@ class Round {
     randomHeadline() {
         const data = fs.readFileSync("./headlines.txt");
         const lines = data.toString().split("\n");
-        return lines[Math.floor(Math.random() * lines.length)];
+
+        do{
+            var headline = lines[Math.floor(Math.random() * lines.length)];
+            
+        }while(this.usedHeadlines.includes(headline))
+
+        this.usedHeadlines.push(headline);
+        return headline
     }
 
     submitImage(user, json) {
