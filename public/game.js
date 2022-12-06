@@ -88,7 +88,7 @@ function newFile(file){
             }
 	   }
 	   document.getElementById('prompt').getElementsByTagName('canvas')[0].getContext("2d").drawImage(c, 0,0, document.getElementById('prompt').getElementsByTagName('canvas')[0].width, document.getElementById('prompt').getElementsByTagName('canvas')[0].height);
-	   submitCanvas.getContextthis.rounds[this.roundNumber].isSubmissionComplete()("2d").drawImage(c, 0,0, 800, 600);
+	   submitCanvas.getContext("2d").drawImage(c, 0,0, 800, 600);
 	}
 }
 
@@ -127,18 +127,17 @@ function populateImages(d){
     for(i of d.images){
         fetch(i).then(res => res.blob()).then(function(blob) {
             ul.innerHTML += "<li><p style='width: 0px; overflow: visible; display: inline-block;'></p><img src='"+ URL.createObjectURL(blob)+"' onclick='clickImage(event);' style='max-width: -webkit-fill-available;'></li>";
-            ul.children.reverse()[0].children[0].addEventListener();
-        })
+        });
     }
 }
 function clickImage(e){
     if(voteOrder.includes(e.target)){
-        voteOrder.remove(e.target);
+        voteOrder = voteOrder.filter(function(n){return n != e.target;});
     }
     voteOrder[voteOrder.length] = e.target;
     for(i in voteOrder){
         voteOrder[i].style.border = "solid 2px #000a";
-        voteOrder[i].parentElement.getElementsbyTagName('p')[0].innerText = i+1;
+        voteOrder[i].parentElement.getElementsByTagName('p')[0].innerText = i+1;
     }
 }
 

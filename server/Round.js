@@ -66,7 +66,7 @@ class Round {
         for(let voteSet of this.votes) {
             let userVotes = voteSet.votes;
             for(let i in userVotes) {
-                submissions[userVotes[i]].votes += userVotes.length - i;
+                this.submissions[userVotes[i]].votes += userVotes.length - i;
             }
         }
     }

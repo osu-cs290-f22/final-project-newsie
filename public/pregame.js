@@ -1,5 +1,5 @@
-const WSaddr = "ws://localhost:3001";
-const HTaddr = "http://localhost:3001/";
+const WSaddr = "ws://66.94.127.226:3001";
+const HTaddr = "http://newsie.vvill.ga/";
 let firstWrong, gameCode, nickName, ws, owner;
 
 let xhp = new XMLHttpRequest();
