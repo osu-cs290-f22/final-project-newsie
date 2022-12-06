@@ -13,7 +13,7 @@ const GameState = {
 }
 
 class Game {
-    constructor(gamemaster, gameCode) {
+    constructor(gamemaster, gameCode, gameManager) {
         this.gamemaster = gamemaster;
         this.gameCode = gameCode;
         this.users = new Map();
@@ -21,6 +21,7 @@ class Game {
         this.addUser(gamemaster);
         this.roundNumber = -1;
         this.gamestate = GameState.lobby;
+        this.gameManager = gameManager;
     }
 
     getCode() {
@@ -121,13 +122,13 @@ class Game {
     }
 
     startRound() {
+        this.roundNumber++;
         if(this.roundNumber >= 4) {
             this.endGame()
             return;
         }
 
         this.rounds.push(new Round(this.users.size));
-        this.roundNumber++;
         this.gamestate = GameState.submission;
 
         let startDate = new Date();
@@ -179,7 +180,7 @@ class Game {
     }
 
     forceEndSubmission() {
-        if(this.rounds[this.roundNumber].isSubmissionComplete()) return;
+        if(this.roundNumber == -1 || this.rounds[this.roundNumber].isSubmissionComplete()) return;
 
         this.endSubmission();
     }
@@ -198,12 +199,14 @@ class Game {
             submission.user.addPoints(submission.votes);
             currentPoints[submission.user.getUsername()] = submission.user.getPoints();
         }
-
+		let winningSubmission = this.rounds[this.roundNumber].getWinningSubmission();
         let data = {
             id: "results",
             roundNumber: this.roundNumber,
             currentPoints: currentPoints,
-            pointsEarned: pointsEarned
+            pointsEarned: pointsEarned,
+            winningImage: winningSubmission.image,
+            winner: winningSubmission.user.getUsername(),
         };
 
         let jsonString = JSON.stringify(data)
@@ -213,12 +216,12 @@ class Game {
     }
 
     forceEndVoting() {
-        if(this.rounds[this.roundNumber].isVotingComplete()) return;
+        if(this.roundNumber == -1 || this.rounds[this.roundNumber].isVotingComplete()) return;
         this.endVoting();
     }
 
     endGame() {
-        let topUser = this.users[0];
+        let topUser = this.users.values().next().value;
 
         for(let user of this.users.values()) {
             if(user.getPoints() > topUser.getPoints()) topUser = user;
@@ -237,7 +240,8 @@ class Game {
             }
         }
 
-        GameManager.getInstance().removeGame(this.gameCode);
+        this.gameManager.removeGame(this.gameCode);
+        this.roundNumber = -1;
     }
 }
 

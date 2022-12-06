@@ -30,7 +30,7 @@
 		<div class="wrapper">
 			<div id="nickname">
 				<h2>Enter Nickname</h2>
-				<input placeholder="Josh Brown">
+				<input placeholder="Josh Brown" onkeypress="if(event.charCode == 13){submitName(this.value);}">
 				<button onclick="submitName(this.parentElement.getElementsByTagName('input')[0].value);">&#10095;</button>
 				<a href="#" onclick="backToCode(this.parentElement);">&#10094;Back</a>
 			</div>
@@ -60,7 +60,7 @@
 				<h2>"News Headline"</h2>
 				<h3>00:00</h3>
 				<input onchange="newFile(this.parentElement.getElementsByTagName('input')[0].files[0])" type="file" accept="image/*" style="display: none;">
-				<canvas onclick="this.parentElement.getElementsByTagName('input')[0].click();" ondrop="event.preventDefault();newFile(event.dataTransfer.files[0]);"></canvas>
+				<canvas onclick="this.parentElement.getElementsByTagName('input')[0].click();"></canvas>
 				<a href="#" onclick="submitPhoto();">Submit &#10095;</a>
 			</div>
 		</div>
@@ -77,6 +77,7 @@
 			<div id="results">
 				<h2>"News Headline"</h2>
 				<img>
+				<h3>Joshua Brown</h3>
 			</div>
 		</div>
 		<div class="wrapper">

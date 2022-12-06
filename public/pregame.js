@@ -119,7 +119,7 @@ function submitName(name){
 }
 function manageCodeInput(event){
 	if(event.charCode == 13){
-		procede(event.target.parentElement);
+		submitCode(this.value.toUpperCase());
 	}
 	else{
 		return (event.charCode > 64 && event.charCode < 91)

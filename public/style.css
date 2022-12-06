@@ -16,6 +16,8 @@ html, body{
 	z-index: -1;
 }
 .wrapper div:not(.wrapper div div){
+	overflow: auto;
+	max-height: 50vh;
 	position: relative;
 	top: 33.33%;
 	margin: 0 auto;
@@ -137,7 +139,20 @@ ul{
 	overflow-y: auto;
 }
 li{
-	display: block;
+	display: flex;
+    justify-content: cneter;
+    align-content: center;
+    align-items: center;
+}
+li p{
+	font-weight: bold;
+	font-size: 18pt;
+    margin: 0;
+    margin-right: 0.5em;
+}
+img{
+	max-width: 50%;
+	max-height: 30vh;
 }
 canvas{
 	width: 100%;
@@ -221,4 +236,25 @@ footer p{
 		transform: translate(0, 0);
 		--border: #4cf;
 	}
+}
+
+/* width */
+::-webkit-scrollbar {
+  	width: 10px;
+}
+
+/* Track */
+::-webkit-scrollbar-track {
+  	background: transparent;
+}
+
+/* Handle */
+::-webkit-scrollbar-thumb {
+	background: #000a;
+	border-radius: 5px;
+}
+
+/* Handle on hover */
+::-webkit-scrollbar-thumb:hover {
+  	background: #000;
 }

@@ -65,7 +65,9 @@ class Round {
     tallyVotes() {
         for(let voteSet of this.votes) {
             let userVotes = voteSet.votes;
+            console.log("userVOtes: " + userVotes);
             for(let i in userVotes) {
+            	console.log("i: " + userVotes[i]);
                 this.submissions[userVotes[i]].votes += userVotes.length - i;
             }
         }
@@ -73,6 +75,16 @@ class Round {
 
     getTalliedVotes() {
         return this.submissions;
+    }
+    
+    getWinningSubmission(){
+    	let winner = {votes: -1};
+    	for(let sub of this.submissions){
+    		if(sub.votes > winner.votes){
+    			winner = sub;
+    		}
+    	}
+    	return winner;
     }
 }
 
