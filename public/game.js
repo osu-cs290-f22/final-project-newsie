@@ -88,14 +88,18 @@ function newFile(file){
             }
 	   }
 	   document.getElementById('prompt').getElementsByTagName('canvas')[0].getContext("2d").drawImage(c, 0,0, document.getElementById('prompt').getElementsByTagName('canvas')[0].width, document.getElementById('prompt').getElementsByTagName('canvas')[0].height);
-	   submitCanvas.getContext("2d").drawImage(c, 0,0, 800, 600);
+	   submitCanvas.getContextthis.rounds[this.roundNumber].isSubmissionComplete()("2d").drawImage(c, 0,0, 800, 600);
 	}
 }
 
 function submitPhoto(){
     if(window.confirm("You sure you want to submit?")){
         submitCanvas.toBlob((b) => {
-        	ws.send(JSON.stringify({"image": b}));
+            let reader = new FileReader();
+            reader.readAsDataURL(b);
+            reader.onloadend = function () {
+                ws.send(JSON.stringify({"image": reader.result}));
+            }
         }, "image/webp");
     }
 }
@@ -121,8 +125,10 @@ function populateImages(d){
     ul.innerHTML = "";
     console.log(d.images);
     for(i of d.images){
-        ul.innerHTML += "<li><p style='width: 0px; overflow: visible; display: inline-block;'></p><img src='"+ URL.createObjectURL(i)+"' onclick='clickImage(event);' style='max-width: -webkit-fill-available;'></li>";
-        ul.children.reverse()[0].children[0].addEventListener();
+        fetch(i).then(res => res.blob()).then(function(blob) {
+            ul.innerHTML += "<li><p style='width: 0px; overflow: visible; display: inline-block;'></p><img src='"+ URL.createObjectURL(blob)+"' onclick='clickImage(event);' style='max-width: -webkit-fill-available;'></li>";
+            ul.children.reverse()[0].children[0].addEventListener();
+        })
     }
 }
 function clickImage(e){

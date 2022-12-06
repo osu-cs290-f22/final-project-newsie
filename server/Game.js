@@ -83,7 +83,9 @@ class Game {
                 }
                 break;
             case GameState.submission:
+                console.log(JSON.parse(data).image);
                 this.rounds[this.roundNumber].submitImage(user, JSON.parse(data));
+                console.log(this.rounds[this.roundNumber].isSubmissionComplete());
                 if(this.rounds[this.roundNumber].isSubmissionComplete()){
                     this.endSubmission();
                 }

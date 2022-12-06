@@ -22,7 +22,7 @@ class Round {
     }
 
     submitImage(user, json) {
-        if(this.submissionComplete)
+        if(this.submissionComplete) return;
 
         this.submissions.push({
             user: user,
