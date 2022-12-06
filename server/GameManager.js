@@ -1,6 +1,5 @@
 const Game = require("./Game");
 
-const instance = new GameManager();
 class GameManager {
     
     constructor() {
@@ -41,5 +40,6 @@ class GameManager {
         return instance;
     }
 }
+const instance = new GameManager();
 
 module.exports = GameManager;

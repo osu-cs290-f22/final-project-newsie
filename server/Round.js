@@ -22,7 +22,7 @@ class Round {
     }
 
     submitImage(user, json) {
-        if(this.submissionComplete)
+        if(this.submissionComplete) return;
 
         this.submissions.push({
             user: user,
@@ -63,10 +63,10 @@ class Round {
     }
 
     tallyVotes() {
-        for(voteSet in this.votes) {
-            userVotes = voteSet.votes;
-            for(var i = 0; i < userVotes.length; i++) {
-                submissions[userVotes[i]].votes += userVotes.length - i;
+        for(let voteSet of this.votes) {
+            let userVotes = voteSet.votes;
+            for(let i of userVotes) {
+                this.submissions[userVotes[i]].votes += userVotes.length - i;
             }
         }
     }
