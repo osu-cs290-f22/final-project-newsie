@@ -3,17 +3,39 @@ html, body{
 	width: 100%;
 	height: 100%;
 	--border: #000a;
-}
-.total{
-	width: 100%;
-	height: 100%;
 	background: linear-gradient(#fff, #feb, #feb) #feb;
 	font-family: 'Grenze', serif;
-	display: flex;
+	overflow: hidden;
+	position: fixed;
+}
+.wrapper{
+	width: 100%;
+	height: 100%;
+	position: absolute;
+	display: none;
+	z-index: -1;
+}
+.wrapper div:not(.wrapper div div){
+	overflow: auto;
+	max-height: 50vh;
+	position: relative;
+	top: 33.33%;
+	margin: 0 auto;
+	text-align: center;
+	width: max-content;
+	max-width: calc(95% - 30px);
+	padding: 15px 15px 5px;
+	background-color: #4002;
+	border-radius: 15px;
+	border-style: solid;
+	border-color: var(--border);
+}
+.active{
+	display: initial;
 }
 header{
 	position: fixed;
-	left: 50%;
+	left: 50vw;
 	transform: translate(-50%, 0);
 	user-select: none;
 	color: #000a;
@@ -22,9 +44,15 @@ header{
 }
 header h1{
 	font-family: 'Grenze Gotisch', cursive;
-	font-size: 111;
+	font-size: 5em;
 	margin-bottom: 0;
-	margin-top: 0.25em;
+	margin-top: 0;
+	height: 1.35em;
+}
+@media screen and (orientation:landscape){
+	header h1{
+		margin-top: 0.25em;
+	}
 }
 header a{
 	color: #000a;
@@ -39,28 +67,16 @@ header a:hover{
 	font-weight: bold;
 	color: black;
 }
-.centered{
-	text-align: center;
-	width: max-content;
-	padding: 15px 15px 5px;
-	background-color: #4002;
-	border-radius: 15px;
-	border-style: solid;
-	border-color: var(--border);
-	display: none;
-}
-.active{
-	display: initial;
-	margin: auto;
-}
 h2{
 	width: 100%;
 	margin: 0;
 	text-align: center;
 	color:#000a;
-	margin-bottom: 10px;
-	font-size: 28px;
+	font-size: 2em;
 	user-select: none;
+}
+h3{
+	margin: 0;
 }
 #code input{
 	text-transform: uppercase;
@@ -99,21 +115,54 @@ button{
 button:hover{
 	border-color: white;
 }
-.centered a{
+.wrapper div a, .wrapper div div a{
 	margin: 0 auto;
 	width: max-content;
 	color: #000a;
 	font-weight: bold;
 	display: block;
 }
-.centered a:hover{
+.wrapper div a:hover, .wrapper div div a:hover{
 	font-weight: normal;
 }
+.wrapper div div a{
+	margin: 0;
+	display: inline-block;
+}
+.wrapper div div{
+	margin: 0 auto;
+}
+ul{
+	padding: 0;
+	margin: 0;
+	max-height: 33.33vh;
+	overflow-y: auto;
+}
+li{
+	display: flex;
+    justify-content: cneter;
+    align-content: center;
+    align-items: center;
+}
+li p{
+	font-weight: bold;
+	font-size: 18pt;
+    margin: 0;
+    margin-right: 0.5em;
+}
+img{
+	max-width: 50%;
+	max-height: 30vh;
+}
+canvas{
+	width: 100%;
+	width: -webkit-fill-available;
+	aspect-ratio: 1.33;
+}
 footer{
-	position: fixed;
-	left: 50%;
-	bottom: 5px;
-	color: white;
+	position: absolute;
+	left: 50vw;
+	bottom: 1vh;
 	transform: translate(-50%, 0);
 	width: max-content;
 	color: #000a;
@@ -187,4 +236,25 @@ footer p{
 		transform: translate(0, 0);
 		--border: #4cf;
 	}
+}
+
+/* width */
+::-webkit-scrollbar {
+  	width: 10px;
+}
+
+/* Track */
+::-webkit-scrollbar-track {
+  	background: transparent;
+}
+
+/* Handle */
+::-webkit-scrollbar-thumb {
+	background: #000a;
+	border-radius: 5px;
+}
+
+/* Handle on hover */
+::-webkit-scrollbar-thumb:hover {
+  	background: #000;
 }
