@@ -2,13 +2,12 @@ const User = require("./User");
 const fs = require('fs');
 
 class Round {
-    constructor(players, usedHeadlines) {
+    constructor(players) {
         this.players = players;
         this.submissions = [];
         this.votes = [];
         this.submissionComplete = false;
         this.votingComplete = false;
-        this.usedHeadlines = usedHeadlines;
         this.headline = this.randomHeadline();
     }
 
@@ -19,18 +18,11 @@ class Round {
     randomHeadline() {
         const data = fs.readFileSync("./headlines.txt");
         const lines = data.toString().split("\n");
-
-        do{
-            var headline = lines[Math.floor(Math.random() * lines.length)];
-            
-        }while(this.usedHeadlines.includes(headline))
-
-        this.usedHeadlines.push(headline);
-        return headline
+        return lines[Math.floor(Math.random() * lines.length)];
     }
 
     submitImage(user, json) {
-        if(this.submissionComplete)
+        if(this.submissionComplete) return;
 
         this.submissions.push({
             user: user,
@@ -71,16 +63,28 @@ class Round {
     }
 
     tallyVotes() {
-        for(voteSet in this.votes) {
-            userVotes = voteSet.votes;
-            for(var i = 0; i < userVotes.length; i++) {
-                submissions[userVotes[i]].votes += userVotes.length - i;
+        for(let voteSet of this.votes) {
+            let userVotes = voteSet.votes;
+            console.log("userVOtes: " + userVotes);
+            for(let i in userVotes) {
+            	console.log("i: " + userVotes[i]);
+                this.submissions[userVotes[i]].votes += userVotes.length - i;
             }
         }
     }
 
     getTalliedVotes() {
         return this.submissions;
+    }
+    
+    getWinningSubmission(){
+    	let winner = {votes: -1};
+    	for(let sub of this.submissions){
+    		if(sub.votes > winner.votes){
+    			winner = sub;
+    		}
+    	}
+    	return winner;
     }
 }
 
